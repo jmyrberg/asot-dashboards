@@ -63,15 +63,15 @@ sidebars <- dashboardSidebar(
                 menuSubItem("Top 50", tabName="top50Tab", icon=icon("bar-chart")),
                 menuSubItem("Timeline", tabName="timelineTab", icon=icon("area-chart")),
                 menuSubItem("Remixes", tabName="remixTab", icon=icon("exchange")),
-                menuSubItem("Tracklists (WIP)", tabName="tracklistTab", icon=icon("list-ul")),
-                menuSubItem("Summary (WIP)", tabName="summaryTab", icon=icon("th"))
+                menuSubItem("Tracklists", tabName="tracklistTab", icon=icon("list-ul")),
+                menuSubItem("Totals", tabName="totalTab", icon=icon("th"))
                 #tags$head(tags$script(HTML('$(document).ready(function() {$(".treeview-menu").css("display", "block");})')))
               ),
   top50Panel,
   timelinePanel,
   remixPanel,
   hr(),
-  tags$div(HTML(paste(tags$span(style="padding-left:12px; font-size: 12px;",HTML("&#169;"),"2016 Jesse Myrberg"), sep = "")))
+  tags$div(a(href="http://github.com/jmyrberg/ASOT-Dashboards",HTML(paste(tags$span(style="padding-left:12px; font-size: 12px;",HTML("&#169;"),"2016 Jesse Myrberg"), sep = ""))))
   )
 )
 
@@ -82,17 +82,15 @@ sidebars <- dashboardSidebar(
 ## Info
 infoTab <- tabItem(tabName="infoTab",
         fluidRow(
-          box(title="A State of Trance", width=12, background="black",
-              a(href="http://www.astateoftrance.com","A State of Trance")," (often abbreviated as ASOT) is a weekly radio show aired every Thursday at 20:00 (CET) and hosted by music producer and DJ Armin van Buuren."
-          ),
-          box(title="What is this site about?", width=12, background="black",
-              "This is an unofficial website that allows the fans of the show to explore the tracklists of the show. This is done through interactive dashboards, where users may affect the data visualization by changing parameters."
-          ),
-          box(title="The tracklist data", width=12, background="black",
-              "The tracklist data used on this site has been programmatically obtained from the official A State of Trance website. Some episodes with missing a tracklist have been obtained manually.",
-                "Simple heuristics have been used for extracting information from the tracklists. Since this site is still a work in progress, some data may be missing or inaccurate."
+          column(width=12,
+          box(title="Welcome to ASOT Dashboards!", width="100%", background="black",
+              p("ASOT Dashboards provide a way to interactively visualize the tracklists of the world famous",a(href="http://www.astateoftrance.com","A State of Trance"),"radio show."),
+              p("Please append the Dashboards from the sidebar menu and start your data journey!"),
+              br(),hr(),
+              em("Note: This site is a fun project and still a work in progress, so some data may be missing or inaccurate."))
           )
         )
+        
 )
 
 ## Top 50
@@ -124,7 +122,7 @@ timelineTab <- tabItem(tabName="timelineTab",
 ## Remix
 remixTab <- tabItem(tabName="remixTab",
                     fluidRow(tags$style(HTML("#shiny-tab-remixTab .box-header {text-align:center;}")),
-                             box(title="Remixes", width='100%', background="black", height=860,
+                             box(title="Who remixed who", width='100%', background="black", height=860,
                                  visNetworkOutput("remixNetPlot", width="100%", height=860))
                              )
                     )
@@ -132,22 +130,72 @@ remixTab <- tabItem(tabName="remixTab",
 ## Tracklists
 tracklistTab <- tabItem(tabName="tracklistTab",
                       fluidRow(
+                        tags$style(HTML("#shiny-tab-tracklistTab .box-header {text-align:center;}")),
                         tags$head(tags$style(HTML("#tracklistTable tr.selected {background-color:'7d7d7d'}"))),
+                        tags$style(HTML('.dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {color: white !important; }')),
+                        tags$style(HTML('.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {color: white !important; }')),
+                        tags$style(HTML('.dataTables_wrapper .dataTables_paginate .paginate_button {color: white !important;}')),
+                        tags$style(HTML('.dataTables_wrapper .dataTables_length select {color: black !important;}')),
+                        tags$style(HTML('.dataTables_wrapper .dataTables_filter input {color: black !important;}')),
                         column(width=12,
                                box(title="Tracklists", height=800, width='100%', background="black", DT::dataTableOutput("tracklistTable"))
                         )
                       )
 )
 
-## Summary
-summaryTab <- tabItem(tabName="summaryTab",
+## Total
+totalTab <- tabItem(tabName="totalTab",
                        fluidRow(
-                         column(width=12,
-                                box(title="Summary", height=800, width='100%', background="black",
-                                    "Current totals will be visualized here")
+                         tags$style(HTML("#shiny-tab-totalTab .box-header {text-align:center;}")),
+                                box(title="Totals", height=800, width='100%', background="black",
+                                    tags$style(HTML("#shiny-tab-totalTab .box-body {text-align:center;}")),
+                                    
+                                    column(width=6,
+
+                                          # Episodes box
+                                          box(HTML(paste(tags$span(style="text-align: center; font-size: 96px;",length(unique(data$episode))), sep = "")),
+                                              br(),
+                                              HTML(paste(tags$span(style="text-align: center; font-size: 48px;"," episodes"), sep = "")),
+                                              background="maroon", width='100%'),
+                                              
+                                          # Artists box
+                                          box(HTML(paste(tags$span(style="text-align: center; font-size: 96px;",length(unique(data$artist))), sep = "")),
+                                              br(),
+                                              HTML(paste(tags$span(style="text-align: center; font-size: 48px;"," artists"), sep = "")),
+                                              background="aqua", width='100%'),
+                                          
+                                          # Labels box
+                                          box(HTML(paste(tags$span(style="text-align: center; font-size: 96px;",length(unique(data$label))), sep = "")),
+                                              br(),
+                                              HTML(paste(tags$span(style="text-align: center; font-size: 48px;"," labels"), sep = "")),
+                                              background="blue", width='100%')
+              
+                                    ),
+                                    
+                                    column(width=6,
+                                          
+                                           # Tracks box
+                                          box(HTML(paste(tags$span(style="text-align: center; font-size: 96px;",nrow(data)), sep = "")),
+                                              br(),
+                                              HTML(paste(tags$span(style="text-align: center; font-size: 48px;"," tracks"), sep = "")),
+                                              br(),
+                                              HTML(paste(tags$span(style="text-align: center; font-size: 24px;","with"), sep = "")),
+                                              br(),
+                                              HTML(paste(tags$span(style="text-align: center; font-size: 96px;",length(unique(data$title))), sep = "")),
+                                              br(),
+                                              HTML(paste(tags$span(style="text-align: center; font-size: 48px;"," unique tracks"), sep = "")),
+                                              background="red", width='100%'),
+                                          
+                                          # Remixes
+                                          box(HTML(paste(tags$span(style="text-align: center; font-size: 96px;",sum(data$remix)), sep = "")),
+                                              br(),
+                                              HTML(paste(tags$span(style="text-align: center; font-size: 48px;"," remixes"), sep = "")),
+                                              background="purple", width='100%')
+                                          
+                                    )
+                                )
                          )
-                       )
-)
+                      )
 
 ## ALL TAB ITEMS
 tabitems <- tabItems(
@@ -156,7 +204,7 @@ tabitems <- tabItems(
   timelineTab,
   remixTab,
   tracklistTab,
-  summaryTab
+  totalTab
 )
   
   

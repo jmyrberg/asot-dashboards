@@ -14,7 +14,7 @@ pd.set_option('display.expand_frame_repr', None)
 
 # Parameters
 input_folders = ['./data/raw_manual/', './data/raw/']
-output_folder = './data/preprocessed_test/'
+output_folder = './data/preprocessed/'
 
 def process_data(input_folders,output_folder):
     
@@ -25,7 +25,6 @@ def process_data(input_folders,output_folder):
     df_list = []
     
     # Process each tracklist
-    episodes_processed = []
     for file in files:
         
         episode = file.split('/')[-1][:3]

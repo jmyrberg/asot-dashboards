@@ -20,6 +20,6 @@ The purpose of ASOT Dashboards is to visualize episode tracklists through intera
 
 ---
 
-#### Note: This is still a work in progress, and some data may be missing or inaccurate.
+#### Note: This is just a fun project and still a work in progress, and some data may be missing or inaccurate.
 
 
